@@ -1,6 +1,8 @@
 import statistics
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn import linear_model
+import numpy as np
 
 def Standardize(list):
     average = statistics.mean(list)
@@ -24,7 +26,7 @@ def GPD(m,b,data,parameter):
         diff += sum_term
     return 2*diff/data["Num of Samples"]
 
-def update(m,b,data,parameter,alpha):
+def Update(m,b,data,parameter,alpha):
     if (parameter == 'm'):
         return m-alpha*GPD(m,b,data,'m')
     if (parameter == 'b'):
@@ -47,16 +49,21 @@ def showerror(error,title):
     plt.title(title)
     plt.show()
 
-def trainModel(m,b,alpha,data,num_of_iterations):
+def trainModel(m,b,alpha,data,num_of_iterations,standardized):
     error=[]
     for i in range(num_of_iterations):
         m_old = m
         b_old = b
-        m = update(m_old, b_old, data, 'm', alpha)
-        b = update(m_old, b_old, data, 'b', alpha)
+        m = Update(m_old, b_old, data, 'm', alpha)
+        b = Update(m_old, b_old, data, 'b', alpha)
         error.append(Error(m,b,data))
-    showmodel(m, b, data, "Model After {} iterations(m={:.3f}, b={:.3e})".format(num_of_iterations,m,b))
-    showerror(error,"Error Through {} iterations".format(num_of_iterations))
+    if standardized:
+        showmodel(m, b, data, "Model After {} iterations(m={:.3f}, b={:.3e})".format(num_of_iterations,m,b))
+        showerror(error,"Error Through {} iterations".format(num_of_iterations))
+    else:
+        showmodel(m, b, data, "Model After {} iterations(m={:.3f}, b={:.3e}) Not Standardized".format(num_of_iterations,m,b))
+        showerror(error,"Error Through {} iterations - Not Standardized".format(num_of_iterations))
+    #print("Model After {} iterations--> m={:.3f}, b={:.3e}".format(num_of_iterations,m,b))
 
 raw_data = pd.read_csv(r'https://raw.githubusercontent.com/tofighi/MachineLearning/master/datasets/student_marks.csv')
 data={
@@ -70,13 +77,32 @@ data={
         "Average": statistics.mean(raw_data['Final mark'])},
     "Num of Samples": raw_data.__len__()
 }
-m=-0.5
-b=0
-alpha=0.00001
+
+#Use Standardized Data
+m,b,alpha = -0.5,0,0.00001
 showmodel(m,b,data,"Initial Model Without Training")
-trainModel(m,b,alpha,data,100)
-trainModel(m,b,alpha,data,2000)
-trainModel(m,b,alpha,data,10000)
+trainModel(m,b,alpha,data,100,True)
+trainModel(m,b,alpha,data,1000000,True)
+#trainModel(m,b,alpha,data,10000000)
+
+#Use Scikit-Learn to train the model and varify results
+regr = linear_model.LinearRegression()
+regr.fit(np.array(data["Midterm Marks"]["Values"]).reshape(-1,1), np.array(data["Final Marks"]["Values"]))
+showmodel(regr.coef_[0],regr.intercept_,data,"Model trained with sklearn (m={:.3f}, b={:.3e})".format(regr.coef_[0],regr.intercept_))
+
+alpha=0.1
+trainModel(m,b,alpha,data,20,True)
+
+#Use Non-Standardized Data
+data["Midterm Marks"]["Values"] = raw_data['Midterm mark']
+data["Final Marks"]["Values"] = raw_data['Final mark']
+alpha = 0.0001 #reset alpha
+showmodel(m,b,data,"Initial Model Without Training (Non Standardized)")
+trainModel(m,b,alpha,data,100,False)
+trainModel(m,b,alpha,data,2000,False)
+
+alpha = 0.1
+trainModel(m,b,alpha,data,50,False)
 
 
 
