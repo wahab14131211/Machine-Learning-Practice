@@ -99,7 +99,7 @@ if __name__ == '__main__':
     print("\nThe missing values are as follows:")
     print(raw_data.isna().sum())
 
-    # How many catagorical variables do you have in your features
+    # How many categorical variables do you have in your features
     print("\nThe column raw_data types are as follows:")
     print(raw_data.info())
 
