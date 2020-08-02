@@ -26,60 +26,7 @@ def TrainModel(num_of_layers,neurons_per_layer,optimizer):
     #print("\nTest accuracy for {} Hidden layers with {} Neurons per layer with {} optimizer is: {}".format(num_of_layers,neurons_per_layer,optimizer,test_acc))
     Results.append("Test accuracy for {} Hidden layers with {} Neurons per layer with {} optimizer is: {}".format(num_of_layers,neurons_per_layer,optimizer,test_acc))
 
-if __name__ == '__main__':
-    print("TensorFlow version is: {}".format(tf.__version__))
-
-    #import MNIST dataset
-    fashion_mnist = keras.datasets.fashion_mnist
-    (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
-    class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
-                   'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
-
-    #EDA
-    print("Shape of training images is: {}".format(train_images.shape))
-    print("Number of labels in training set is: {}".format(len(train_labels)))
-    print("The possible labels are: {}".format(train_labels))
-    print("The shape of the test_images is: {}".format(test_images.shape))
-    print("The length of the test set is: {}".format(len(test_labels)))
-
-    #Show first image in training set
-    #plt.figure()
-    #plt.imshow(train_images[0])
-    #plt.colorbar()
-    #plt.grid(False)
-    #plt.show()
-
-    #Preform MinMax normalization on images
-    train_images = train_images / 255.0
-    test_images = test_images / 255.0
-
-    #Show first 25 images in training set
-    #plt.figure(figsize=(10,10))
-    #for i in range(25):
-    #    plt.subplot(5,5,i+1)
-    #    plt.xticks([])
-    #    plt.yticks([])
-    #    plt.grid(False)
-    #    plt.imshow(train_images[i], cmap=plt.cm.binary)
-    #    plt.xlabel(class_names[train_labels[i]])
-    #plt.show()
-
-    Results = list()
-    TrainModel(1,128, 'adam')
-    TrainModel(5,20, 'adam')
-    TrainModel(2, 50, 'adam')
-    TrainModel(5, 200, 'adam')
-    TrainModel(10, 100, 'adam')
-    TrainModel(5, 1000, 'adam')
-    TrainModel(10, 500, 'adam')
-    TrainModel(1,128, 'sgd')
-    TrainModel(5,20, 'sgd')
-    TrainModel(2, 50, 'sgd')
-    TrainModel(5, 200, 'sgd')
-    TrainModel(10, 100, 'sgd')
-    TrainModel(5, 1000, 'sgd')
-    TrainModel(10, 500, 'sgd')
-
+def TrainModel_CNN():
     #Use CNN
     # Load the fashion-mnist pre-shuffled train data and test data
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.fashion_mnist.load_data()
@@ -126,6 +73,60 @@ if __name__ == '__main__':
     test_loss, test_acc = model.evaluate(x_test, y_test, verbose=2)
     Results.append("Test accuracy for CNN is {}".format(test_acc))
 
+if __name__ == '__main__':
+    print("TensorFlow version is: {}".format(tf.__version__))
+
+    #import MNIST dataset
+    fashion_mnist = keras.datasets.fashion_mnist
+    (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
+    class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+                   'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+
+    #EDA
+    print("Shape of training images is: {}".format(train_images.shape))
+    print("Number of labels in training set is: {}".format(len(train_labels)))
+    print("The possible labels are: {}".format(train_labels))
+    print("The shape of the test_images is: {}".format(test_images.shape))
+    print("The length of the test set is: {}".format(len(test_labels)))
+
+    #Show first image in training set
+    plt.figure()
+    plt.imshow(train_images[0])
+    plt.colorbar()
+    plt.grid(False)
+    plt.show()
+
+    #Preform MinMax normalization on images
+    train_images = train_images / 255.0
+    test_images = test_images / 255.0
+
+    #Show first 25 images in training set
+    plt.figure(figsize=(10,10))
+    for i in range(25):
+        plt.subplot(5,5,i+1)
+        plt.xticks([])
+        plt.yticks([])
+        plt.grid(False)
+        plt.imshow(train_images[i], cmap=plt.cm.binary)
+        plt.xlabel(class_names[train_labels[i]])
+    plt.show()
+
+    Results = list()
+    TrainModel(1,128, 'adam')
+    TrainModel(5,20, 'adam')
+    TrainModel(2, 50, 'adam')
+    TrainModel(5, 200, 'adam')
+    TrainModel(10, 100, 'adam')
+    TrainModel(5, 1000, 'adam')
+    TrainModel(10, 500, 'adam')
+    TrainModel(1,128, 'sgd')
+    TrainModel(5,20, 'sgd')
+    TrainModel(2, 50, 'sgd')
+    TrainModel(5, 200, 'sgd')
+    TrainModel(10, 100, 'sgd')
+    TrainModel(5, 1000, 'sgd')
+    TrainModel(10, 500, 'sgd')
+    TrainModel_CNN()
 
     for result in Results:
         print(result)
