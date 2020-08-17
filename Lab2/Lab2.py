@@ -137,14 +137,14 @@ if __name__ == '__main__':
     thetas = np.random.rand(len(Feature_Data.columns))
 
     #Train the models. Use multiprocessing, as training takes ~2.5 hours if running sequencially.
-    print("Start Training using Multiprocessing:")
-    pool = Pool(4)  #Define 4 workers in the pool. If your CPU does not have 4 cores, or you want to use less than 4 cores, reduce this value
-    pool.starmap(trainModel, [(thetas, Feature_Data, Target_Data, 0.0001, 25000, 0),
-                              (thetas, Feature_Data, Target_Data, 0.0001, 10000, 50),
-                              (thetas, Feature_Data, Target_Data, 0.001, 25000, 0),
-                              (thetas, Feature_Data, Target_Data, 0.001, 10000, 50)]) # Add commands to the pool. each worker will call the 'trainModel' function with an element from the list
-    pool.close() #wait for all workers to finish
-    pool.join() #combine all threads, so any line after this does not use multiple cores
+#    print("Start Training using Multiprocessing:")
+#    pool = Pool(4)  #Define 4 workers in the pool. If your CPU does not have 4 cores, or you want to use less than 4 cores, reduce this value
+#    pool.starmap(trainModel, [(thetas, Feature_Data, Target_Data, 0.0001, 25000, 0),
+#                              (thetas, Feature_Data, Target_Data, 0.0001, 10000, 50),
+#                              (thetas, Feature_Data, Target_Data, 0.001, 25000, 0),
+#                              (thetas, Feature_Data, Target_Data, 0.001, 10000, 50)]) # Add commands to the pool. each worker will call the 'trainModel' function with an element from the list
+#    pool.close() #wait for all workers to finish
+#    pool.join() #combine all threads, so any line after this does not use multiple cores
 
     #Train model using sklearn
     LogisticRegression_Model = LogisticRegression().fit(Feature_Data,Target_Data)
